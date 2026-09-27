@@ -1,0 +1,842 @@
+{
+  "generated_at": "2026-09-27 12:02:07",
+  "duration_s": 135.25,
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "corpus_chunks": 133,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "offline_fast_mode": false
+  },
+  "G2": {
+    "eligible_cases": 2,
+    "early_retrieval_cases": 2,
+    "early_retrieval_rate": 1.0,
+    "target": 0.8,
+    "pass": true,
+    "controller_decision_accuracy": 1.0,
+    "false_trigger_rate_on_unstable_fragments": 0.0,
+    "cases": [
+      {
+        "case": "stream_multi_intent_early_tyre_boot_alerts",
+        "chunks": 3,
+        "decisions": [
+          "WAIT",
+          "RETRIEVE",
+          "RETRIEVE"
+        ],
+        "expected_decisions": [
+          "WAIT",
+          "RETRIEVE",
+          "RETRIEVE"
+        ],
+        "first_retrieve_chunk_index": 1,
+        "early_retrieval": true,
+        "final_subqueries": [
+          "how to change a tyre on my Aventro car?",
+          "how to open the boot?",
+          "what the warning alerts mean?"
+        ],
+        "uncertainty": ""
+      },
+      {
+        "case": "stream_spec_style_workshop",
+        "chunks": 3,
+        "decisions": [
+          "WAIT",
+          "RETRIEVE",
+          "RETRIEVE"
+        ],
+        "expected_decisions": [
+          "WAIT",
+          "RETRIEVE",
+          "RETRIEVE"
+        ],
+        "first_retrieve_chunk_index": 1,
+        "early_retrieval": true,
+        "final_subqueries": [
+          "to plan a customer workshop in Pune for 30 people I need?",
+          "the cancellation policy?",
+          "the catering options?"
+        ],
+        "uncertainty": ""
+      },
+      {
+        "case": "stream_single_chunk_not_early_eligible",
+        "chunks": 1,
+        "decisions": [
+          "RETRIEVE"
+        ],
+        "expected_decisions": [
+          "RETRIEVE"
+        ],
+        "first_retrieve_chunk_index": 0,
+        "early_retrieval": false,
+        "final_subqueries": [
+          "What does the ABS warning light indicate?"
+        ],
+        "uncertainty": ""
+      }
+    ]
+  },
+  "G3": {
+    "compound_cases": 2,
+    "correctly_decomposed": 2,
+    "multi_intent_accuracy": 1.0,
+    "target": 0.7,
+    "pass": true,
+    "cases": [
+      {
+        "case": "compound_abs_traction_lane",
+        "subqueries": [
+          "What does the ABS warning indicate?",
+          "how does traction control work?",
+          "what does lane keeping assist do?"
+        ],
+        "distinct_subqueries": 3,
+        "min_required": 3,
+        "no_near_duplicates": true,
+        "pass": true
+      },
+      {
+        "case": "compound_zoom_price_cruise",
+        "subqueries": [
+          "What is the price of the Aventro Zoom SUV?",
+          "does it have adaptive cruise control?"
+        ],
+        "distinct_subqueries": 2,
+        "min_required": 2,
+        "no_near_duplicates": true,
+        "pass": true
+      }
+    ]
+  },
+  "G4": {
+    "claim_support_ratio": 1.0,
+    "total_verified_claims": 43,
+    "supported_claims": 43,
+    "ungrounded_claims": 0,
+    "claims_with_fabricated_chunk_ids": 0,
+    "fabricated_citations": 0,
+    "target": 0.85,
+    "pass": true,
+    "cases": [
+      {
+        "case": "g_tyre",
+        "query": "How do I change a tyre on the Aventro car?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "Steps to Change a Tyre 1. [ Aventro Motors- How to Change a Tyre.pdf, p.1] Aventro Motors: How to Change a Tyre Changing a flat tyre is a basic and essential automotive skill for e",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 1,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": [
+            " Aventro Motors- How to Change a Tyre.pdf",
+            " Aventro Motors- How to Change a Tyre.pdf"
+          ]
+        }
+      },
+      {
+        "case": "g_abs",
+        "query": "What does the ABS warning indicate?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "ABS Warning Light \u2022 Meaning: Indicates a malfunction in the Anti-lock Braking System. [Instrument Cluster Warning Alerts.pdf, p.1] Oil Pressure Warning Light \u2022 Meaning: Low oil pre",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 1,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_cruise",
+        "query": "Does the Aventro Zoom have adaptive cruise control?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "What is Adaptive Cruise Control? [Adaptive Cruise Control (ACC).pdf, p.1] How Does Adaptive Cruise Control Work? [Adaptive Cruise Control (ACC).pdf, p.1]",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 1,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_boot",
+        "query": "How do I open the boot?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "\u2022 Lift the boot gently to open. [Opening and Closing the Boot.pdf, p.1] \u2022 Go to the rear of the vehicle and lift the boot lid upwards to open. [Opening and Closing the Boot.pdf, p.",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 1,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_preowned",
+        "query": "What are pre-owned certified cars?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "Pre-Owned Certified Cars Why Choose Aventro Certified Pre-Owned Cars? [Pre-Owned Certified Cars.pdf, p.1] Aventro Tower, Sector 18, Gurugram, Haryana 122018, India \uffff+91 124 1234567",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 2,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_engine",
+        "query": "How to handle engine wont start issue?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "The engine will start. [How to Start Your Aventro Car.pdf, p.1] How to Handle \u201cEngine Won\u2019t Start\u201d Issue When your Aventro vehicle\u2019s engine refuses to start, it can be frustrating.",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 2,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_tow",
+        "query": "How do I tow my Aventro car safely?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "How to Tow Your Aventro Car Whether you\u2019ve had a breakdown, a minor accident, or just need to move your Aventro vehicle, towing it safely is critical. [How to Tow Your Aventro Car.",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 1,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_paraphrase_start",
+        "query": "My car refuses to start, what should I do?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "How to Handle \u201cEngine Won\u2019t Start\u201d Issue When your Aventro vehicle\u2019s engine refuses to start, it can be frustrating. [How to Handle Engine Wont Start Issue.pdf, p.1] \u2022 The car may ",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 2,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_paraphrase_thirdparty",
+        "query": "What are the rules for third party accessories?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "\u2013 Complimentary accessories kit on select models. [Discounts.pdf, p.1] Do\u2019s and Don\u2019ts About 3rd Party Accessories & Electrical Accessories for Your Car When it comes to enhancing ",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 2,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_paraphrase_door",
+        "query": "The car key remote battery is dead, how do I open the door?",
+        "decision": "RETRIEVE",
+        "source_hit": true,
+        "uncertainty_flag": false,
+        "uncertainty_expected": false,
+        "uncertainty_ok": true,
+        "answer_preview": "How to Open the Door When the Car Key Re- mote Battery is Dead If your Aventro Motors car key remote battery is dead and you\u2019re unable to unlock your car using the remote, you can ",
+        "verification": {
+          "claims_total": 2,
+          "claims_supported": 2,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 2,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 2,
+          "inline_citation_sources_invalid": []
+        }
+      },
+      {
+        "case": "g_gap",
+        "query": "What is the submarine sonar calibration procedure?",
+        "decision": "RETRIEVE",
+        "source_hit": null,
+        "uncertainty_flag": true,
+        "uncertainty_expected": true,
+        "uncertainty_ok": true,
+        "answer_preview": "This request could not be verified from the available corpus. The retrieved corpus does not contain evidence for: 'What is the submarine sonar calibration procedure'.",
+        "verification": {
+          "claims_total": 0,
+          "claims_supported": 0,
+          "claims_ungrounded": 0,
+          "claims_fabricated": 0,
+          "citations_total": 0,
+          "fabricated_citations": 0,
+          "inline_citation_sources": 0,
+          "inline_citation_sources_invalid": []
+        }
+      }
+    ]
+  },
+  "G5": {
+    "late_detail_cases": 2,
+    "verified_continuity": 2,
+    "session_refinement_rate": 1.0,
+    "pass": true,
+    "cases": [
+      {
+        "case": "ld_preowned_discourse",
+        "initial": "What is the procedure to sell my Aventro car?",
+        "late": "Actually the car is a pre-owned certified vehicle and the paperwork was done after the warranty ended.",
+        "late_decision": "RETRIEVE",
+        "retrieval_mode": "delta",
+        "is_delta": true,
+        "answer_version": 2,
+        "preserved_claims": 2,
+        "updated_claims": 2,
+        "preserved_prior_claim_texts": true,
+        "state_continuity": true,
+        "uncertainty": "",
+        "pass": true
+      },
+      {
+        "case": "ld_international",
+        "initial": "What are the service center locations?",
+        "late": "I mean for international trips and the inspection was done after the service interval.",
+        "late_decision": "RETRIEVE",
+        "retrieval_mode": "delta",
+        "is_delta": true,
+        "answer_version": 2,
+        "preserved_claims": 2,
+        "updated_claims": 1,
+        "preserved_prior_claim_texts": true,
+        "state_continuity": true,
+        "uncertainty": "",
+        "pass": true
+      }
+    ]
+  },
+  "G6": {
+    "traces": 51,
+    "complete_traces": 51,
+    "trace_coverage": 1.0,
+    "logger_coverage": {
+      "traces": 51,
+      "complete": 51,
+      "coverage": 1.0
+    },
+    "target": 1.0,
+    "pass": true
+  },
+  "suppression": {
+    "suppression_cases": 2,
+    "correct": 2,
+    "suppression_accuracy": 1.0,
+    "pass": true,
+    "cases": [
+      {
+        "case": "s_repeat_bullets",
+        "request": "Please repeat your last answer in two bullets.",
+        "decision": "SUPPRESS",
+        "reason": "presentation_restructure",
+        "retrieval_required": false,
+        "retrieval_events": 0,
+        "citations_retained": true,
+        "answer_version_unchanged": true,
+        "bullets": true,
+        "pass": true
+      },
+      {
+        "case": "s_shorter",
+        "request": "Make it shorter",
+        "decision": "SUPPRESS",
+        "reason": "presentation_restructure",
+        "retrieval_required": false,
+        "retrieval_events": 0,
+        "citations_retained": true,
+        "answer_version_unchanged": true,
+        "bullets": false,
+        "pass": true
+      }
+    ]
+  },
+  "ablations": {
+    "retrieval_leg_ablation": {
+      "description": "dense-only vs hybrid (dense+BM25+RRF+rerank) top-5 source hits",
+      "expected_source_probes": 10,
+      "dense_only_hits": 10,
+      "hybrid_hits": 10,
+      "dense_only_hit_rate": 1.0,
+      "hybrid_hit_rate": 1.0,
+      "cases": [
+        {
+          "case": "g_tyre",
+          "expected_source": "Tyre",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_abs",
+          "expected_source": "ABS",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_cruise",
+          "expected_source": "Cruise",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_boot",
+          "expected_source": "Boot",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_preowned",
+          "expected_source": "Pre-Owned",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_engine",
+          "expected_source": "Engine",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_tow",
+          "expected_source": "Tow",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_paraphrase_start",
+          "expected_source": "Engine",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_paraphrase_thirdparty",
+          "expected_source": "Party",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        },
+        {
+          "case": "g_paraphrase_door",
+          "expected_source": "Door",
+          "dense_only_hit@5": true,
+          "hybrid_hit@5": true
+        }
+      ]
+    },
+    "controller_policy_ablation": {
+      "description": "intent-stability controller vs always-retrieve baseline",
+      "eligible_early_cases": 2,
+      "ours_early_retrieval_cases": 2,
+      "baseline_early_retrieval_cases": 2,
+      "wait_expected_chunks": 2,
+      "ours_false_triggers": 0,
+      "baseline_false_triggers": 2,
+      "ours_false_trigger_rate": 0.0,
+      "baseline_false_trigger_rate": 1.0
+    }
+  },
+  "edge_cases": [
+    {
+      "probe": "corpus_gap_uncertainty",
+      "input": "What is the submarine sonar calibration procedure?",
+      "decision": "RETRIEVE",
+      "uncertainty_flag": true,
+      "uncertainty": "The retrieved corpus does not contain evidence for: 'What is the submarine sonar calibration procedure'.",
+      "citations": 0,
+      "answer_preview": "This request could not be verified from the available corpus. The retrieved corpus does not contain evidence for: 'What is the submarine sonar calibration proce"
+    },
+    {
+      "probe": "partial_multi_intent_coverage",
+      "input": "What does the ABS warning indicate and what is the catering policy?",
+      "subqueries": [
+        "What does the ABS warning indicate?",
+        "what is the catering policy?"
+      ],
+      "uncertainty_flag": true,
+      "uncertainty": "Evidence for the following sub-intent is limited and could not be fully verified: 'what is the catering policy'.",
+      "answer_preview": "ABS Warning Light \u2022 Meaning: Indicates a malfunction in the Anti-lock Braking System. [Instrument Cluster Warning Alerts.pdf, p.1] Terms & Conditions \u2022 Discounts subject to availability of models/vari"
+    },
+    {
+      "probe": "provisional_version_lineage",
+      "decisions": [
+        "RETRIEVE",
+        "RETRIEVE",
+        "RETRIEVE"
+      ],
+      "modes": [
+        "provisional",
+        "delta",
+        "delta"
+      ],
+      "answer_versions": [
+        1,
+        2,
+        3
+      ],
+      "lineage": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "probe": "latency_profile",
+      "total_latency_ms": 1510.28,
+      "dense_ms": 69.78,
+      "sparse_ms": 10.26,
+      "fusion_ms": 0.38,
+      "rerank_ms": 1423.15,
+      "synthesis_ms": 5.64,
+      "answer_ready_ms": 1510.24
+    }
+  ],
+  "cases": {
+    "stream_multi_intent_early_tyre_boot_alerts": {
+      "gate": "G2/G3",
+      "decisions": [
+        "WAIT",
+        "RETRIEVE",
+        "RETRIEVE"
+      ],
+      "first_retrieve_chunk_index": 1,
+      "early_retrieval": true,
+      "final_subqueries": [
+        "how to change a tyre on my Aventro car?",
+        "how to open the boot?",
+        "what the warning alerts mean?"
+      ]
+    },
+    "stream_spec_style_workshop": {
+      "gate": "G2/G3",
+      "decisions": [
+        "WAIT",
+        "RETRIEVE",
+        "RETRIEVE"
+      ],
+      "first_retrieve_chunk_index": 1,
+      "early_retrieval": true,
+      "final_subqueries": [
+        "to plan a customer workshop in Pune for 30 people I need?",
+        "the cancellation policy?",
+        "the catering options?"
+      ]
+    },
+    "stream_single_chunk_not_early_eligible": {
+      "gate": "G2/G3",
+      "decisions": [
+        "RETRIEVE"
+      ],
+      "first_retrieve_chunk_index": 0,
+      "early_retrieval": false,
+      "final_subqueries": [
+        "What does the ABS warning light indicate?"
+      ]
+    },
+    "compound_abs_traction_lane": {
+      "gate": "G3",
+      "subqueries": [
+        "What does the ABS warning indicate?",
+        "how does traction control work?",
+        "what does lane keeping assist do?"
+      ],
+      "distinct_subqueries": 3,
+      "pass": true
+    },
+    "compound_zoom_price_cruise": {
+      "gate": "G3",
+      "subqueries": [
+        "What is the price of the Aventro Zoom SUV?",
+        "does it have adaptive cruise control?"
+      ],
+      "distinct_subqueries": 2,
+      "pass": true
+    },
+    "s_repeat_bullets": {
+      "gate": "suppression",
+      "pass": true,
+      "case": "s_repeat_bullets",
+      "request": "Please repeat your last answer in two bullets.",
+      "decision": "SUPPRESS",
+      "reason": "presentation_restructure",
+      "retrieval_required": false,
+      "retrieval_events": 0,
+      "citations_retained": true,
+      "answer_version_unchanged": true,
+      "bullets": true
+    },
+    "s_shorter": {
+      "gate": "suppression",
+      "pass": true,
+      "case": "s_shorter",
+      "request": "Make it shorter",
+      "decision": "SUPPRESS",
+      "reason": "presentation_restructure",
+      "retrieval_required": false,
+      "retrieval_events": 0,
+      "citations_retained": true,
+      "answer_version_unchanged": true,
+      "bullets": false
+    },
+    "g_tyre": {
+      "gate": "G4",
+      "query": "How do I change a tyre on the Aventro car?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "Steps to Change a Tyre 1. [ Aventro Motors- How to Change a Tyre.pdf, p.1] Aventro Motors: How to Change a Tyre Changing a flat tyre is a basic and essential automotive skill for e",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 1,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": [
+        " Aventro Motors- How to Change a Tyre.pdf",
+        " Aventro Motors- How to Change a Tyre.pdf"
+      ]
+    },
+    "g_abs": {
+      "gate": "G4",
+      "query": "What does the ABS warning indicate?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "ABS Warning Light \u2022 Meaning: Indicates a malfunction in the Anti-lock Braking System. [Instrument Cluster Warning Alerts.pdf, p.1] Oil Pressure Warning Light \u2022 Meaning: Low oil pre",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 1,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_cruise": {
+      "gate": "G4",
+      "query": "Does the Aventro Zoom have adaptive cruise control?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "What is Adaptive Cruise Control? [Adaptive Cruise Control (ACC).pdf, p.1] How Does Adaptive Cruise Control Work? [Adaptive Cruise Control (ACC).pdf, p.1]",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 1,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_boot": {
+      "gate": "G4",
+      "query": "How do I open the boot?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "\u2022 Lift the boot gently to open. [Opening and Closing the Boot.pdf, p.1] \u2022 Go to the rear of the vehicle and lift the boot lid upwards to open. [Opening and Closing the Boot.pdf, p.",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 1,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_preowned": {
+      "gate": "G4",
+      "query": "What are pre-owned certified cars?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "Pre-Owned Certified Cars Why Choose Aventro Certified Pre-Owned Cars? [Pre-Owned Certified Cars.pdf, p.1] Aventro Tower, Sector 18, Gurugram, Haryana 122018, India \uffff+91 124 1234567",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 2,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_engine": {
+      "gate": "G4",
+      "query": "How to handle engine wont start issue?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "The engine will start. [How to Start Your Aventro Car.pdf, p.1] How to Handle \u201cEngine Won\u2019t Start\u201d Issue When your Aventro vehicle\u2019s engine refuses to start, it can be frustrating.",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 2,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_tow": {
+      "gate": "G4",
+      "query": "How do I tow my Aventro car safely?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "How to Tow Your Aventro Car Whether you\u2019ve had a breakdown, a minor accident, or just need to move your Aventro vehicle, towing it safely is critical. [How to Tow Your Aventro Car.",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 1,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_paraphrase_start": {
+      "gate": "G4",
+      "query": "My car refuses to start, what should I do?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "How to Handle \u201cEngine Won\u2019t Start\u201d Issue When your Aventro vehicle\u2019s engine refuses to start, it can be frustrating. [How to Handle Engine Wont Start Issue.pdf, p.1] \u2022 The car may ",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 2,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_paraphrase_thirdparty": {
+      "gate": "G4",
+      "query": "What are the rules for third party accessories?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "\u2013 Complimentary accessories kit on select models. [Discounts.pdf, p.1] Do\u2019s and Don\u2019ts About 3rd Party Accessories & Electrical Accessories for Your Car When it comes to enhancing ",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 2,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_paraphrase_door": {
+      "gate": "G4",
+      "query": "The car key remote battery is dead, how do I open the door?",
+      "source_hit": true,
+      "uncertainty_flag": false,
+      "answer_preview": "How to Open the Door When the Car Key Re- mote Battery is Dead If your Aventro Motors car key remote battery is dead and you\u2019re unable to unlock your car using the remote, you can ",
+      "claims_total": 2,
+      "claims_supported": 2,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 2,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 2,
+      "inline_citation_sources_invalid": []
+    },
+    "g_gap": {
+      "gate": "G4",
+      "query": "What is the submarine sonar calibration procedure?",
+      "source_hit": null,
+      "uncertainty_flag": true,
+      "answer_preview": "This request could not be verified from the available corpus. The retrieved corpus does not contain evidence for: 'What is the submarine sonar calibration procedure'.",
+      "claims_total": 0,
+      "claims_supported": 0,
+      "claims_ungrounded": 0,
+      "claims_fabricated": 0,
+      "citations_total": 0,
+      "fabricated_citations": 0,
+      "inline_citation_sources": 0,
+      "inline_citation_sources_invalid": []
+    },
+    "ld_preowned_discourse": {
+      "gate": "G5",
+      "late_decision": "RETRIEVE",
+      "retrieval_mode": "delta",
+      "answer_version": 2,
+      "preserved_claims": 2,
+      "pass": true
+    },
+    "ld_international": {
+      "gate": "G5",
+      "late_decision": "RETRIEVE",
+      "retrieval_mode": "delta",
+      "answer_version": 2,
+      "preserved_claims": 2,
+      "pass": true
+    }
+  }
+}
