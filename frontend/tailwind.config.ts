@@ -33,6 +33,7 @@ const config: Config = {
           "indigo-deep": "#4F46E5",
           violet: "#8B5CF6",
           cyan: "#22D3EE",
+          amber: "#F59E0B",
         },
         semantic: {
           emerald: "#10B981",
