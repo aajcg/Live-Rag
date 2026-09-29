@@ -8,10 +8,10 @@ import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/utils/utils";
 
 const navItems = [
-  { name: "Features", href: "#features" },
-  { name: "Architecture", href: "#architecture" },
-  { name: "Benchmarks", href: "#benchmarks" },
   { name: "Demo", href: "/demo" },
+  { name: "Architecture", href: "/architecture" },
+  { name: "Benchmarks", href: "/benchmarks" },
+  { name: "Telemetry", href: "/telemetry" },
   { name: "API Docs", href: "/api-docs" },
 ];
 
@@ -24,7 +24,7 @@ export function Navbar() {
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-50 glass border-b border-subtle"
     >
-      <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="relative">
             <Zap className="w-6 h-6 text-brand-indigo" />
@@ -36,7 +36,6 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
-            const isExternal = item.href.startsWith("/");
             
             return (
               <Link
@@ -44,7 +43,7 @@ export function Navbar() {
                 href={item.href}
                 className={cn(
                   "relative px-4 py-2 text-sm text-secondary hover:text-primary transition-colors",
-                  isActive && "text-primary"
+                  isActive && "text-primary font-medium"
                 )}
               >
                 {item.name}
@@ -73,9 +72,9 @@ export function Navbar() {
           <ThemeToggle />
           <Link
             href="/demo"
-            className="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-white bg-gradient-brand rounded-lg hover:opacity-90 transition-opacity"
+            className="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-white bg-gradient-brand rounded-lg hover:opacity-90 transition-opacity shadow-sm"
           >
-            Try Demo
+            Open Demo
           </Link>
         </div>
       </div>
