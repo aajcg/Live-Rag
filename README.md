@@ -120,7 +120,7 @@ Live-Rag/
 ### 1 — Clone & Install
 
 ```bash
-git clone https://github.com/<your-org>/Live-Rag.git
+git clone https://github.com/aajcg/Live-Rag.git
 cd Live-Rag
 
 python -m venv .venv
@@ -418,4 +418,4 @@ This project was built for the **Samsung PRISM Hackathon — Theme 4 (Live RAG)*
 
 ---
 
-> Built with ❤️ by the Live-RAG team · SRM Institute of Science and Technology
+> Built with ❤️ by team Thinkode · SRM Institute of Science and Technology
