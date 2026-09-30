@@ -156,6 +156,7 @@ export default function DemoPage() {
                 completedStages={state.completedStages}
                 isStreaming={state.isStreaming}
                 decision={state.decision}
+                decisionReason={state.reason}
                 isProvisional={state.isProvisional}
                 isDelta={state.isDelta}
               />

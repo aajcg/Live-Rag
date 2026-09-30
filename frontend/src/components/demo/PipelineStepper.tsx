@@ -17,6 +17,7 @@ interface PipelineStepperProps {
   completedStages: string[];
   isStreaming: boolean;
   decision?: string;
+  decisionReason?: string;
   isProvisional?: boolean;
   isDelta?: boolean;
 }
@@ -26,6 +27,7 @@ export function PipelineStepper({
   completedStages,
   isStreaming,
   decision,
+  decisionReason,
   isProvisional,
   isDelta,
 }: PipelineStepperProps) {
@@ -37,13 +39,20 @@ export function PipelineStepper({
         </span>
         <AnimatePresence>
           {decision && (
-            <motion.span
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase bg-brand-primary/10 text-brand-primary border border-brand-primary/20"
+              className="flex items-center gap-2"
             >
-              {decision}
-            </motion.span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+                {decision}
+              </span>
+              {decisionReason && (
+                <span className="text-[10px] italic text-text-muted">
+                  ({decisionReason})
+                </span>
+              )}
+            </motion.div>
           )}
           {isProvisional && (
             <motion.span
