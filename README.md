@@ -13,7 +13,7 @@
 | **Source Code** | [GH Repo](https://github.com/aajcg/Live-Rag/) |
 | **README** | [README.md](https://github.com/aajcg/Live-Rag/README.md/) |
 | **Presentation** | [GDrive](https://drive.google.com/drive/folders/1pwitDC2nKbR5Nq898jtVAgyo1y6uIAHg?usp=sharing) |
-| **Demo Video** | [GDrive](https://drive.google.com/drive/folders/1pwitDC2nKbR5Nq898jtVAgyo1y6uIAHg?usp=sharing) |
+| **Demo Video** | [Canva Video Viewer](https://canva.link/ur0i9r88va3gtb7) |
 | **AI Disclosure** | [GDrive](https://drive.google.com/drive/folders/1pwitDC2nKbR5Nq898jtVAgyo1y6uIAHg?usp=sharing) |
 
 
