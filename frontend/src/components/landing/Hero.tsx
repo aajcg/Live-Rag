@@ -9,10 +9,10 @@ export function Hero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Aurora background */}
       <div className="absolute inset-0 bg-aurora opacity-50 dark:opacity-100" />
-      
+
       {/* Dot grid pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--bg-base)_70%)]">
-        <div 
+        <div
           className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
           style={{
             backgroundImage: `radial-gradient(circle, currentColor 1px, transparent 1px)`,
@@ -22,19 +22,6 @@ export function Hero() {
       </div>
 
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 py-24 text-center">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-elevated border border-subtle mb-8"
-        >
-          <div className="relative">
-            <div className="w-2 h-2 rounded-full bg-brand-indigo animate-pulse" />
-            <div className="absolute inset-0 w-2 h-2 rounded-full bg-brand-indigo blur-md animate-pulse" />
-          </div>
-          <span className="text-sm text-secondary">Samsung PRISM GenAI Hackathon</span>
-        </motion.div>
 
         {/* Heading */}
         <motion.h1

@@ -40,7 +40,42 @@ class JevClient:
             return self._fallback_response(endpoint, payload)
 
     def _fallback_response(self, endpoint: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Provides offline fallbacks for Jev API."""
+        """Provides offline fallbacks for Jev API by routing through OpenRouter directly."""
+        try:
+            if endpoint == "choice":
+                options = payload.get("options", [])
+                system_prompt = f"You are a routing decision engine. You must output exactly one of these options: {options}. Output nothing else."
+                
+                req = urllib.request.Request(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    data=json.dumps({
+                        "model": settings.LLM_MODEL,
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": payload.get("state", "")}
+                        ],
+                        "temperature": 0.0
+                    }).encode('utf-8'),
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {self.api_key}"
+                    },
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    data = json.loads(response.read().decode('utf-8'))
+                    ans = data["choices"][0]["message"]["content"].strip()
+                    # Clean punctuation
+                    import re
+                    ans = re.sub(r'[^A-Z]', '', ans.upper())
+                    for opt in options:
+                        if opt.upper() in ans:
+                            return {"result": opt, "confidence": 0.9}
+                    return {"result": options[0], "confidence": 0.5}
+        except Exception as e:
+            print(f"Jev OpenRouter fallback failed: {e}")
+
+        # Ultimate fallback
         if endpoint == "choice":
             return {"result": payload["options"][0], "confidence": 0.8}
         elif endpoint == "score":

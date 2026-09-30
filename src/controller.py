@@ -93,7 +93,7 @@ class RetrievalController:
     ]
 
     def __init__(self, api_key: Optional[str] = None, use_llm: bool = False):
-        self.api_key = api_key or settings.OPENAI_API_KEY
+        self.api_key = api_key or settings.JEV_API_KEY or settings.OPENAI_API_KEY
         self.use_llm = use_llm and bool(self.api_key)
 
     # ------------------------------------------------------------------ utils

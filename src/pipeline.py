@@ -132,7 +132,10 @@ class RAGPipeline:
         auto_ingest: bool = True,
     ):
         self.retriever = retriever or HybridRetriever()
-        self.controller = controller or RetrievalController(api_key=settings.OPENAI_API_KEY)
+        self.controller = controller or RetrievalController(
+            api_key=settings.JEV_API_KEY or settings.OPENAI_API_KEY, 
+            use_llm=True
+        )
         self.decomposer = decomposer or QueryDecomposer(api_key=settings.OPENAI_API_KEY)
         self.synthesizer = synthesizer or AnswerSynthesizer(api_key=settings.OPENAI_API_KEY)
         self.memory_manager = memory_manager or SessionMemoryManager()
