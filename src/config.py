@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     
     # LLM & Embedding Settings
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    JEV_API_KEY: str = os.getenv("JEV_API_KEY", "")
     LLM_MODEL: str = os.getenv("LLM_MODEL", "gpt-4o-mini")
     EMBEDDING_PROVIDER: str = os.getenv("EMBEDDING_PROVIDER", "local")
     EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")

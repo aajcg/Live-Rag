@@ -633,6 +633,25 @@ class HybridRetriever:
         return self._rerank_composite(query, candidates, top_k)
 
     def _rerank_composite(self, query: str, candidates: List[RetrievedChunk], top_k: int) -> List[RetrievedChunk]:
+        # Try Jev for chunk scoring first
+        if settings.JEV_API_KEY:
+            try:
+                from src.jev_client import JevClient
+                client = JevClient(api_key=settings.JEV_API_KEY)
+                for c in candidates:
+                    state_context = f"Query: {query}\nChunk: {c.text}"
+                    # Score chunk relevance from 0.0 to 1.0
+                    score_val, conf = client.score(state=state_context, scale_min=0.0, scale_max=1.0)
+                    # Blend with retrieval score
+                    composite = (c.retrieval_score * 0.4) + (score_val * 0.6)
+                    c.retrieval_score = round(composite, 5)
+                    c.retrieval_method = "reranked_jev"
+                candidates.sort(key=lambda x: x.retrieval_score, reverse=True)
+                return candidates[:top_k]
+            except Exception as e:
+                print(f"Jev chunk scoring fallback: {e}")
+
+        # Original lexical composite fallback
         q_words = set(re.findall(r"\w+", query.lower()))
         for c in candidates:
             c_words = set(re.findall(r"\w+", c.text.lower()))

@@ -147,9 +147,9 @@ class RetrievalController:
 
         if self.use_llm:
             try:
-                llm_res = self._evaluate_llm(normalized)
-                if llm_res:
-                    return llm_res
+                jev_res = self._evaluate_jev(normalized)
+                if jev_res:
+                    return jev_res
             except Exception:
                 pass
 
@@ -264,31 +264,28 @@ class RetrievalController:
 
         return False, ""
 
-    # --------------------------------------------------------------- llm path
-    def _evaluate_llm(self, query: str) -> Optional[ControllerResult]:
-        from openai import OpenAI
-        client = OpenAI(api_key=self.api_key)
-        prompt = (
-            f"Analyze transcript turn: '{query}'. "
-            "Respond in JSON format with keys: 'decision' ('WAIT', 'RETRIEVE', or 'SUPPRESS'), 'reason', 'confidence' (float 0-1)."
-        )
-        res = client.chat.completions.create(
-            model=settings.LLM_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.0,
-            response_format={"type": "json_object"}
-        )
-        content = json.loads(res.choices[0].message.content)
-        dec_str = content.get("decision", "RETRIEVE").upper()
-        if dec_str in ControllerDecisionEnum.__members__:
-            decision = ControllerDecisionEnum(dec_str)
-            return ControllerResult(
-                decision=decision,
-                reason=content.get("reason", "LLM decision"),
-                confidence=float(content.get("confidence", 0.9)),
-                normalized_query=query,
-                retrieval_required=decision == ControllerDecisionEnum.RETRIEVE,
-                intent_stability=0.0,
-                trigger=decision.value.lower(),
-            )
+    # --------------------------------------------------------------- jev path
+    def _evaluate_jev(self, query: str) -> Optional[ControllerResult]:
+        from src.jev_client import JevClient
+        client = JevClient(api_key=self.api_key)
+        
+        # We use the Choice primitive to pick between WAIT, RETRIEVE, and SUPPRESS.
+        state_context = f"Determine if the following user transcript needs retrieval, is incomplete (WAIT), or requires no new knowledge (SUPPRESS): '{query}'"
+        options = ["WAIT", "RETRIEVE", "SUPPRESS"]
+        
+        try:
+            decision_str, confidence = client.choice(state=state_context, options=options)
+            if decision_str in ControllerDecisionEnum.__members__:
+                decision = ControllerDecisionEnum(decision_str)
+                return ControllerResult(
+                    decision=decision,
+                    reason=f"Jev decision: {decision_str}",
+                    confidence=confidence,
+                    normalized_query=query,
+                    retrieval_required=decision == ControllerDecisionEnum.RETRIEVE,
+                    intent_stability=0.0,
+                    trigger=decision.value.lower(),
+                )
+        except Exception as e:
+            print(f"Jev controller fallback: {e}")
         return None

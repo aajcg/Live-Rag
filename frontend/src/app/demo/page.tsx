@@ -20,6 +20,7 @@ export default function DemoPage() {
   const [claims, setClaims] = useState<Claim[]>([]);
   const [telemetry, setTelemetry] = useState<any>(null);
   const [decision, setDecision] = useState("");
+  const [decisionReason, setDecisionReason] = useState("");
   const [uncertainty, setUncertainty] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
 
@@ -45,6 +46,7 @@ export default function DemoPage() {
     setClaims([]);
     setTelemetry(null);
     setDecision("");
+    setDecisionReason("");
     setUncertainty("");
     setCompletedStages([]);
     setActiveStage("controller");
@@ -54,6 +56,7 @@ export default function DemoPage() {
       switch (eventType) {
         case "decision":
           setDecision(data.decision);
+          setDecisionReason(data.reason || "");
           if (data.decision === "RETRIEVE") {
             setActiveStage("decompose");
             setCompletedStages((prev) => [...prev, "controller"]);
@@ -119,19 +122,26 @@ export default function DemoPage() {
             {answer && (
               <div className="p-6 rounded-xl bg-surface border border-subtle space-y-4">
                 {decision && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted">Decision:</span>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${
-                        decision === "RETRIEVE"
-                          ? "bg-brand-cyan/20 text-brand-cyan"
-                          : decision === "WAIT"
-                          ? "bg-semantic-amber/20 text-semantic-amber"
-                          : "bg-semantic-rose/20 text-semantic-rose"
-                      }`}
-                    >
-                      {decision}
-                    </span>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted">Decision:</span>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          decision === "RETRIEVE"
+                            ? "bg-brand-cyan/20 text-brand-cyan"
+                            : decision === "WAIT"
+                            ? "bg-semantic-amber/20 text-semantic-amber"
+                            : "bg-semantic-rose/20 text-semantic-rose"
+                        }`}
+                      >
+                        {decision}
+                      </span>
+                    </div>
+                    {decisionReason && (
+                      <span className="text-xs text-muted/70 italic ml-1">
+                        Reason: {decisionReason}
+                      </span>
+                    )}
                   </div>
                 )}
 
