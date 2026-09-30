@@ -1,71 +1,129 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Check, Clock, Zap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, Loader2 } from "lucide-react";
 
-const stages = [
-  { id: "controller", name: "Controller", icon: Clock },
-  { id: "decompose", name: "Decompose", icon: Zap },
-  { id: "retrieve", name: "Retrieve", icon: Zap },
-  { id: "fuse", name: "Fuse", icon: Zap },
-  { id: "rerank", name: "Rerank", icon: Zap },
-  { id: "synthesize", name: "Synthesize", icon: Check },
+const STAGES = [
+  { id: "controller", label: "Controller" },
+  { id: "decompose", label: "Decompose" },
+  { id: "retrieve", label: "Retrieve" },
+  { id: "fuse", label: "RRF Fuse" },
+  { id: "rerank", label: "Rerank" },
+  { id: "synthesize", label: "Synthesize" },
 ];
 
 interface PipelineStepperProps {
   activeStage: string;
   completedStages: string[];
+  isStreaming: boolean;
+  decision?: string;
+  isProvisional?: boolean;
+  isDelta?: boolean;
 }
 
-export function PipelineStepper({ activeStage, completedStages }: PipelineStepperProps) {
+export function PipelineStepper({
+  activeStage,
+  completedStages,
+  isStreaming,
+  decision,
+  isProvisional,
+  isDelta,
+}: PipelineStepperProps) {
   return (
-    <div className="flex items-center justify-between gap-2 p-4 rounded-xl bg-surface border border-subtle mb-6">
-      {stages.map((stage, index) => {
-        const isCompleted = completedStages.includes(stage.id);
-        const isActive = activeStage === stage.id;
-        const Icon = stage.icon;
+    <div className="py-2 mb-2">
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <span className="text-xs font-semibold uppercase tracking-widest text-text-muted">
+          Pipeline State
+        </span>
+        <AnimatePresence>
+          {decision && (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase bg-brand-primary/10 text-brand-primary border border-brand-primary/20"
+            >
+              {decision}
+            </motion.span>
+          )}
+          {isProvisional && (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase bg-brand-soft/10 text-brand-soft border border-brand-soft/20"
+            >
+              PROVISIONAL
+            </motion.span>
+          )}
+          {isDelta && (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase bg-semantic-emerald/10 text-semantic-emerald border border-semantic-emerald/20"
+            >
+              DELTA
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
 
-        return (
-          <div key={stage.id} className="flex items-center flex-1">
-            <div className="flex flex-col items-center flex-1">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0.5 }}
-                animate={{
-                  scale: isActive ? 1.1 : isCompleted ? 1 : 0.9,
-                  opacity: isActive ? 1 : isCompleted ? 0.8 : 0.4,
-                }}
-                className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-                  isCompleted
-                    ? "bg-semantic-emerald/20 text-semantic-emerald"
-                    : isActive
-                    ? "bg-brand-indigo/20 text-brand-indigo"
-                    : "bg-elevated text-muted"
-                }`}
-              >
-                {isCompleted ? (
-                  <Check className="w-5 h-5" />
-                ) : (
-                  <Icon className="w-5 h-5" />
-                )}
-              </motion.div>
-              <span
-                className={`text-xs mt-2 font-medium ${
-                  isActive ? "text-primary" : isCompleted ? "text-semantic-emerald" : "text-muted"
-                }`}
-              >
-                {stage.name}
-              </span>
+      <div className="flex items-center">
+        {STAGES.map((stage, index) => {
+          const isCompleted = completedStages.includes(stage.id);
+          const isActive = activeStage === stage.id;
+
+          return (
+            <div key={stage.id} className="flex items-center flex-1">
+              <div className="flex flex-col items-center">
+                <motion.div
+                  animate={{
+                    scale: isActive ? [1, 1.1, 1] : 1,
+                  }}
+                  transition={
+                    isActive
+                      ? { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+                      : {}
+                  }
+                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    isCompleted
+                      ? "bg-semantic-emerald text-white"
+                      : isActive
+                      ? "bg-brand-primary text-white shadow-soft"
+                      : "bg-elevated border border-subtle text-text-muted"
+                  }`}
+                >
+                  {isCompleted ? (
+                    <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                  ) : isActive ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <span className="text-[10px] font-medium">{index + 1}</span>
+                  )}
+                </motion.div>
+                <span
+                  className={`text-[10px] mt-2 font-medium uppercase tracking-wider ${
+                    isActive || isCompleted
+                      ? "text-text-primary"
+                      : "text-text-muted"
+                  }`}
+                >
+                  {stage.label}
+                </span>
+              </div>
+              {index < STAGES.length - 1 && (
+                <div className="flex-1 h-px mx-2 transition-colors duration-500 bg-border-subtle overflow-hidden">
+                   {isCompleted && (
+                     <motion.div 
+                        initial={{ x: "-100%" }}
+                        animate={{ x: 0 }}
+                        className="h-full bg-semantic-emerald"
+                     />
+                   )}
+                </div>
+              )}
             </div>
-            {index < stages.length - 1 && (
-              <div
-                className={`flex-1 h-0.5 mx-2 transition-colors ${
-                  isCompleted ? "bg-semantic-emerald" : "bg-border"
-                }`}
-              />
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

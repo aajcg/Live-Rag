@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Github, Zap } from "lucide-react";
-import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/utils/utils";
 
 const navItems = [
@@ -70,7 +69,6 @@ export function Navbar() {
           >
             <Github className="w-5 h-5 text-muted" />
           </Link>
-          <ThemeToggle />
           <Link
             href="/demo"
             className="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-white bg-gradient-brand rounded-lg hover:opacity-90 transition-opacity"

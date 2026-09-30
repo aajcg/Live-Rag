@@ -1,15 +1,36 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Copy, RefreshCw, CheckCircle, XCircle } from "lucide-react";
+import {
+  Copy,
+  RefreshCw,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Database,
+} from "lucide-react";
 import { api } from "@/utils/api";
-import { generateSessionId, copyToClipboard, formatLatency } from "@/utils/utils";
+import { generateSessionId, copyToClipboard } from "@/utils/utils";
 
-export function SessionManager() {
-  const [sessionId, setSessionId] = useState(() => generateSessionId());
-  const [healthStatus, setHealthStatus] = useState<"checking" | "healthy" | "unhealthy">("checking");
-  const [readyStatus, setReadyStatus] = useState<"checking" | "ready" | "not-ready">("checking");
-  const [chunkCount, setChunkCount] = useState<number>(0);
+interface SessionManagerProps {
+  sessionId: string;
+  onNewSession: (id: string) => void;
+  answerVersion?: number;
+  isStreaming?: boolean;
+}
+
+type Status = "checking" | "ok" | "error";
+
+export function SessionManager({
+  sessionId,
+  onNewSession,
+  answerVersion,
+  isStreaming,
+}: SessionManagerProps) {
+  const [healthStatus, setHealthStatus] = useState<Status>("checking");
+  const [corpusStatus, setCorpusStatus] = useState<Status>("checking");
+  const [chunkCount, setChunkCount] = useState<number | null>(null);
+  const [corpusName, setCorpusName] = useState("");
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -20,19 +41,20 @@ export function SessionManager() {
   const checkHealth = async () => {
     try {
       await api.health();
-      setHealthStatus("healthy");
+      setHealthStatus("ok");
     } catch {
-      setHealthStatus("unhealthy");
+      setHealthStatus("error");
     }
   };
 
   const checkReady = async () => {
     try {
       const data = await api.ready();
-      setReadyStatus(data.ready ? "ready" : "not-ready");
-      setChunkCount(data.chunk_count);
+      setCorpusStatus(data.ready ? "ok" : "error");
+      setChunkCount(data.indexed_chunks ?? null);
+      setCorpusName(data.corpus ?? "");
     } catch {
-      setReadyStatus("not-ready");
+      setCorpusStatus("error");
     }
   };
 
@@ -42,71 +64,92 @@ export function SessionManager() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleNewSession = () => {
-    setSessionId(generateSessionId());
-  };
+  const StatusDot = ({ status }: { status: Status }) =>
+    status === "checking" ? (
+      <Loader2 className="w-3.5 h-3.5 text-muted animate-spin" />
+    ) : status === "ok" ? (
+      <CheckCircle className="w-3.5 h-3.5 text-semantic-emerald" />
+    ) : (
+      <XCircle className="w-3.5 h-3.5 text-semantic-rose" />
+    );
 
   return (
-    <div className="p-4 rounded-xl bg-surface border border-subtle space-y-4">
+    <div className="space-y-4 mb-6">
+      <div className="flex items-center justify-between pb-2 border-b border-border-subtle">
+        <span className="text-xs font-bold text-text-muted uppercase tracking-widest">
+          Session Identity
+        </span>
+        {isStreaming && (
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-semantic-emerald animate-pulse" />
+            <span className="text-[10px] text-semantic-emerald font-medium">
+              LIVE
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Session ID */}
       <div>
-        <label className="text-xs text-muted mb-2 block">Session ID</label>
         <div className="flex items-center gap-2">
-          <code className="flex-1 px-3 py-2 rounded-lg bg-elevated text-sm font-mono text-secondary">
+          <code className="flex-1 text-xs font-mono text-text-primary truncate">
             {sessionId}
           </code>
           <button
             onClick={handleCopy}
-            className="p-2 rounded-lg bg-elevated hover:bg-hover transition-colors"
-            aria-label="Copy session ID"
+            className="p-1.5 rounded-lg hover:bg-black/5 transition-colors"
+            title="Copy session ID"
           >
             {copied ? (
-              <CheckCircle className="w-4 h-4 text-semantic-emerald" />
+              <CheckCircle className="w-3.5 h-3.5 text-semantic-emerald" />
             ) : (
-              <Copy className="w-4 h-4 text-muted" />
+              <Copy className="w-3.5 h-3.5 text-text-muted" />
             )}
           </button>
           <button
-            onClick={handleNewSession}
-            className="p-2 rounded-lg bg-elevated hover:bg-hover transition-colors"
-            aria-label="New session"
+            onClick={() => onNewSession(generateSessionId())}
+            className="p-1.5 rounded-lg hover:bg-black/5 transition-colors"
+            title="New session"
           >
-            <RefreshCw className="w-4 h-4 text-muted" />
+            <RefreshCw className="w-3.5 h-3.5 text-text-muted" />
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="text-xs text-muted mb-1 block">API Health</label>
-          <div className="flex items-center gap-2">
-            {healthStatus === "checking" ? (
-              <div className="w-2 h-2 rounded-full bg-muted animate-pulse" />
-            ) : healthStatus === "healthy" ? (
-              <CheckCircle className="w-4 h-4 text-semantic-emerald" />
-            ) : (
-              <XCircle className="w-4 h-4 text-semantic-rose" />
-            )}
-            <span className="text-sm text-secondary capitalize">{healthStatus}</span>
-          </div>
+      {/* Status grid */}
+      <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-1.5">
+          <StatusDot status={healthStatus} />
+          <span className="text-[10px] uppercase font-bold text-text-muted">
+            {healthStatus === "ok" ? "API ONLINE" : healthStatus === "error" ? "API OFFLINE" : "..."}
+          </span>
         </div>
-        <div>
-          <label className="text-xs text-muted mb-1 block">Corpus Ready</label>
-          <div className="flex items-center gap-2">
-            {readyStatus === "checking" ? (
-              <div className="w-2 h-2 rounded-full bg-muted animate-pulse" />
-            ) : readyStatus === "ready" ? (
-              <CheckCircle className="w-4 h-4 text-semantic-emerald" />
-            ) : (
-              <XCircle className="w-4 h-4 text-semantic-rose" />
-            )}
-            <span className="text-sm text-secondary capitalize">{readyStatus}</span>
-          </div>
+        <div className="w-px h-3 bg-border-subtle" />
+        <div className="flex items-center gap-1.5">
+          <StatusDot status={corpusStatus} />
+          <span className="text-[10px] uppercase font-bold text-text-muted">
+            {corpusStatus === "ok" ? "CORPUS READY" : corpusStatus === "error" ? "CORPUS UNREADY" : "..."}
+          </span>
         </div>
       </div>
 
-      {readyStatus === "ready" && (
-        <div className="text-xs text-muted">
-          Indexed chunks: <span className="font-mono text-secondary">{chunkCount}</span>
+      {/* Corpus info */}
+      {corpusStatus === "ok" && chunkCount != null && (
+        <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-text-muted">
+          <Database className="w-3.5 h-3.5 text-brand-primary" />
+          <div>
+            <span className="text-brand-primary">
+              {chunkCount.toLocaleString()}
+            </span>{" "}
+            CHUNKS INDEXED
+          </div>
+        </div>
+      )}
+
+      {/* Answer version */}
+      {answerVersion != null && answerVersion > 1 && (
+        <div className="text-[10px] font-bold text-brand-soft uppercase tracking-widest">
+          Answer version: v{answerVersion}
         </div>
       )}
     </div>

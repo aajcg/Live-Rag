@@ -63,7 +63,13 @@ export const api = {
     return handleResponse(response);
   },
 
-  async ready(): Promise<{ ready: boolean; chunk_count: number }> {
+  async ready(): Promise<{
+    ready: boolean;
+    indexed_chunks: number;
+    corpus: string;
+    embedding_provider: string;
+    status: string;
+  }> {
     const response = await fetchWithTimeout(`${API_URL}/rag/ready`);
     return handleResponse(response);
   },
@@ -98,7 +104,9 @@ export const api = {
   },
 
   async getSession(sessionId: string): Promise<any> {
-    const response = await fetchWithTimeout(`${API_URL}/rag/session/${sessionId}`);
+    const response = await fetchWithTimeout(
+      `${API_URL}/rag/session/${sessionId}`
+    );
     return handleResponse(response);
   },
 
@@ -107,7 +115,13 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Streaming answer using fetch + ReadableStream
+  /**
+   * Stream answer via SSE.
+   * The backend emits:
+   *   event: <name>\ndata: <json>\n\n
+   *
+   * Returns an abort function.
+   */
   async streamAnswer(
     sessionId: string,
     transcriptChunk: string,
@@ -117,73 +131,75 @@ export const api = {
   ): Promise<() => void> {
     const controller = new AbortController();
 
-    try {
-      const response = await fetch(`${API_URL}/rag/answer/stream`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: sessionId,
-          transcript_chunk: transcriptChunk,
-        }),
-        signal: controller.signal,
-      });
+    const run = async () => {
+      try {
+        const response = await fetch(`${API_URL}/rag/answer/stream`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: sessionId,
+            transcript_chunk: transcriptChunk,
+          }),
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        const text = await response.text();
-        throw new ApiError(text || "Stream request failed", response.status);
-      }
+        if (!response.ok) {
+          const text = await response.text();
+          throw new ApiError(text || "Stream request failed", response.status);
+        }
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new ApiError("Response body is not readable");
-      }
+        const reader = response.body?.getReader();
+        if (!reader) throw new ApiError("Response body is not readable");
 
-      const decoder = new TextDecoder();
-      let buffer = "";
+        const decoder = new TextDecoder();
+        let buffer = "";
 
-      const processStream = async () => {
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-              onComplete?.();
-              break;
-            }
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            onComplete?.();
+            break;
+          }
 
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n");
-            buffer = lines.pop() || "";
+          buffer += decoder.decode(value, { stream: true });
+          // SSE messages are separated by double-newline
+          const messages = buffer.split("\n\n");
+          buffer = messages.pop() ?? "";
+
+          for (const message of messages) {
+            if (!message.trim()) continue;
+
+            // Parse SSE lines: event: <name>\ndata: <json>
+            const lines = message.split("\n");
+            let eventName = "message";
+            let dataStr = "";
 
             for (const line of lines) {
-              if (line.trim() === "") continue;
-              if (line.startsWith("data: ")) {
-                const data = line.slice(6);
-                if (data === "[DONE]") continue;
-                try {
-                  const parsed = JSON.parse(data);
-                  const eventType = parsed.event;
-                  onEvent(eventType, parsed.data);
-                } catch (e) {
-                  console.error("Failed to parse SSE data:", data, e);
-                }
+              if (line.startsWith("event: ")) {
+                eventName = line.slice(7).trim();
+              } else if (line.startsWith("data: ")) {
+                dataStr = line.slice(6).trim();
+              }
+            }
+
+            if (dataStr && dataStr !== "[DONE]") {
+              try {
+                const parsed = JSON.parse(dataStr);
+                onEvent(eventName, parsed);
+              } catch (e) {
+                console.warn("Failed to parse SSE data:", dataStr, e);
               }
             }
           }
-        } catch (error) {
-          if (error instanceof Error && error.name !== "AbortError") {
-            onError?.(error);
-          }
         }
-      };
-
-      processStream();
-    } catch (error) {
-      if (error instanceof Error && error.name !== "AbortError") {
-        onError?.(error);
+      } catch (error) {
+        if (error instanceof Error && error.name !== "AbortError") {
+          onError?.(error);
+        }
       }
-    }
+    };
 
-    // Return abort function
+    run();
     return () => controller.abort();
   },
 };
